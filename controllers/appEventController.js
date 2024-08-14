@@ -1,10 +1,12 @@
+const customerController = require('./customerController')
+
 module.exports = async (req,res,next) => {
 
     const { payload } = req.body;
 
     //handle subscribe events
     SubscribeEvents(payload);
-
+    
     console.log("============= Shopping ================");
     console.log(payload);
     res.json(payload);
@@ -17,7 +19,9 @@ module.exports = async (req,res,next) => {
 
         const { event, data } =  payload;
 
-        const { userId, product, order, qty } = data;
+        //const { userId, product, order, qty } = data;
+
+        const {_id} = data
 
         switch(event){
             case 'ADD_TO_WISHLIST':
@@ -25,7 +29,9 @@ module.exports = async (req,res,next) => {
                 this.AddToWishlist(userId,product)
                 break;
             case 'ADD_TO_CART':
-                this.ManageCart(userId,product, qty, false);
+                //this.ManageCart(userId,product, qty, false);
+                customerController.addToCart(payload)
+                console.log('product added to cart _id');
                 break;
             case 'REMOVE_FROM_CART':
                 this.ManageCart(userId,product,qty, true);

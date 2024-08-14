@@ -84,11 +84,16 @@ exports.login = async (req, res, next) => {
     }
 }
 
-exports.protect = async (req, res, next) => {
+exports.protect = async (req, res, next, isToken, alternateToken) => {
     try {
         let token
-        if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            token = req.headers.authorization.split(' ')[1]
+        if(isToken)
+        {
+            token = alternateToken
+        }else{
+            if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+                token = req.headers.authorization.split(' ')[1]
+            } 
         }
 
         if(!token) {
@@ -151,4 +156,15 @@ exports.addAddress = async (req, res, next) => {
     } catch(err) {
         next(err)
     }
+}
+
+exports.addToCart = async (payload) => {
+    console.log('hello');
+    
+    console.log(payload);
+    const token = payload.data.authToken
+    this.protect(req, res, next, true, token)
+
+    console.log('auth completed');
+    
 }
